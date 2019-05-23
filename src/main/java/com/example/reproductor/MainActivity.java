@@ -1,8 +1,11 @@
 package com.example.reproductor;
 
+import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -11,7 +14,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
 
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView iv;
     Thread actualizarSeekbar;
     String aux = "";
+    Handler handler;
     int posicion = 0;
 
     @Override
@@ -112,23 +115,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void nombres() {
         if (posicion == 0) {
-            txtViewSound.setText("In-da-club");
-            txtViewArtist.setText("50-cent");
+            txtViewSound.setText(Html.fromHtml("<b>In-da-club</b>"));
+            txtViewArtist.setText(Html.fromHtml("<u>50-Cent</u>") );
         } else if (posicion == 1) {
-            txtViewSound.setText("girls-like-you");
-            txtViewArtist.setText("maroon-5-ft-cardi-b");
+            txtViewSound.setText(Html.fromHtml("<b>Girls-like-you</b>"));
+            txtViewArtist.setText(Html.fromHtml("<u>Maroon-5-ft-Cardi-B</u>") );
         } else if (posicion == 2) {
-            txtViewSound.setText("Eextasis");
-            txtViewArtist.setText("cartel-de-santa-wcorona-y-millonario");
+            txtViewSound.setText(Html.fromHtml("<b>Extasis</b>"));
+            txtViewArtist.setText(Html.fromHtml("<u>Cartel-de-santa-Wcorona-y-Mmillonario</u>") );
         } else if (posicion == 3) {
-            txtViewSound.setText("i-think-i-like-it");
-            txtViewArtist.setText("fake-blood");
+            txtViewSound.setText(Html.fromHtml("<b>I-think-i-like-it</b>"));
+            txtViewArtist.setText(Html.fromHtml("<u>Fake-Blood</u>") );
         } else if (posicion == 4) {
-            txtViewSound.setText("All-night");
-            txtViewArtist.setText("R5");
+            txtViewSound.setText(Html.fromHtml("<b>All-night</b>"));
+            txtViewArtist.setText(Html.fromHtml("<u>R5</u>") );
         } else if (posicion == 5) {
-            txtViewSound.setText("See-You-Again");
-            txtViewArtist.setText("Wiz khalifa-ft-Chalie Puth");
+            txtViewSound.setText(Html.fromHtml("<b>See-You-Again</b>"));
+            txtViewArtist.setText(Html.fromHtml("<u>Wiz khalifa-ft-Chalie Puth</u>") );
         }
 
     }
@@ -150,9 +153,10 @@ public class MainActivity extends AppCompatActivity {
                 aux = getTiempo(ejecucion);
                 continua.setText(aux.toString().trim());
 
-            } catch (Exception e) {
+            } catch (InterruptedException ex){
                 continua.setText(aux);
             }
+
         }
     }
 
@@ -174,8 +178,8 @@ public class MainActivity extends AppCompatActivity {
                 posicion--;
                 images();
                 nombres();
-                actualizarSeekbar.start();
                 arraymp[posicion].start();
+               // actualizarSeekbar.start();
                 sb.setMax(0);
                 txtDuracion.setText(getTiempo(arraymp[posicion].getDuration()));
                 sb.setMax(arraymp[posicion].getDuration());
@@ -221,10 +225,27 @@ public class MainActivity extends AppCompatActivity {
             posicion = 0;
             btnPlayPause.setBackgroundResource(R.drawable.play);
             iv.setImageResource(R.drawable.fondo);
+            sb.setMax(0);
             Toast.makeText(this, "Stop", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "No hay cancion reproduciendo", Toast.LENGTH_SHORT).show();
         }
+        sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                arraymp[posicion].seekTo(seekBar.getProgress());
+            }
+        });
 
     }
 
